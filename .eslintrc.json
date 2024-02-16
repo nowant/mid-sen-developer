@@ -25,7 +25,8 @@
             "prefix": "app",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "prettier/prettier": ["error", { "singleQuote": true }]
       }
     },
     {

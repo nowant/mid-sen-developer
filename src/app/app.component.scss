@@ -1,0 +1,18 @@
+.cats-page {
+  padding: 20px 10%;
+
+  &__filter {
+    display: flex;
+    align-items: center;
+
+    &-title {
+      margin-left: 16px;
+      margin-right: 20px;
+    }
+
+    &-clear-btn {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+  }
+}

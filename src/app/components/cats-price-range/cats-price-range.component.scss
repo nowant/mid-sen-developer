@@ -1,0 +1,9 @@
+.cats-range {
+  display: flex;
+  justify-content: space-between;
+  width: 220px;
+
+  &__field {
+    width: 100px;
+  }
+}

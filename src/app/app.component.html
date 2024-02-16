@@ -1,2 +1,31 @@
-<router-outlet></router-outlet>
-<p>Hello! This is an Angular boilerplate.</p>
+<div class="cats-page">
+  <div class="cats-page__filter">
+    <h4 class="cats-page__filter-title">Filters: </h4>
+
+    <app-cats-select
+      [option]="category$ | async"
+      (selected)="onFilterByCategoryCats($event)"
+    ></app-cats-select>
+
+    <app-cats-price-range
+      [range]="range$ | async"
+      (changed)="onFilterByPriceCats($event)"
+    ></app-cats-price-range>
+
+    <button
+      *ngIf="hasFilters$ | async"
+      mat-button color="warn"
+      class="cats-page__filter-clear-btn"
+      (click)="onClearFilterCats()"
+    >
+      Clear
+    </button>
+  </div>
+
+  <app-cats-table
+    [cats]="cats$ | async"
+    [isLoading]="isLoading$ | async"
+    [pagination]="pagination$ | async"
+    (paginated)="onPaginateCats($event)"
+  ></app-cats-table>
+</div>
