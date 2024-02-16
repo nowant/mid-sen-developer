@@ -16,9 +16,6 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
-    "paths": {
-      "@api/*": ["api/*"],
-    }
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
   "angularCompilerOptions": {
