@@ -23,7 +23,7 @@ import { CatsState } from 'src/app/states/cats.state';
   selector: 'app-cats-select',
   template: `
     <mat-form-field>
-      <mat-label>Choose a category</mat-label>
+      <mat-label>Choose a breed</mat-label>
       <mat-select
         [disabled]="options.length < 1"
         [value]="option"
@@ -67,7 +67,7 @@ export class CatsSelectComponent implements OnInit {
       )
       .subscribe((cats: Cat[]) => {
         this._catsWorkerService
-          .work(CatUtils.FilterCategories, [cats])
+          .work([CatUtils.FilterCategories], [cats])
           .subscribe((categories: string[]) => {
             this.options = categories;
             this._changeDetectorRef.detectChanges();

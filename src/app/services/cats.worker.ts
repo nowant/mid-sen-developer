@@ -1,19 +1,37 @@
 /// <reference lib="webworker" />
 
-import { CatUtils, catUtils } from '../utils';
+import { CatUtils, catGetParamsUtils, catUtils } from '../utils';
 
-interface Message {
-  strategy: CatUtils;
-  params: never[];
+interface WebWorkerMessage {
+  strategies: CatUtils[];
+  params: any;
 }
 
-addEventListener('message', (event: MessageEvent<Message>) => {
-  const { strategy, params } = event.data;
+addEventListener('message', (event: MessageEvent<WebWorkerMessage>) => {
+  const { strategies, params } = event.data;
 
-  if (typeof catUtils[strategy] !== 'function') {
+  if (!Array.isArray(strategies)) {
     return;
   }
 
-  const output: unknown[] = catUtils[strategy].apply(null, params as []);
+  const hasArrayParams = Array.isArray(params);
+  let output!: unknown;
+
+  for (const strategy of strategies) {
+    if (hasArrayParams) {
+      output = catUtils[strategy].apply(null, params as []);
+      break;
+    }
+
+    const { filter } = params;
+    const entities = output || params.entities;
+    const invokeParams = [
+      entities,
+      ...(catGetParamsUtils[strategy]?.call(null, filter as never) || []),
+    ];
+
+    output = catUtils[strategy].apply(null, invokeParams as []);
+  }
+
   postMessage(output);
 });

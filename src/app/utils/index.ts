@@ -1,5 +1,7 @@
 import { useToCreateCats } from './create-cats.util';
 import {
+  getFilterCategoryParams,
+  getFilterRangeParams,
   useToFilterByCategoryCats,
   useToFilterByPriceRangeCats,
   useToFilterCatCategories,
@@ -19,4 +21,11 @@ export const catUtils: {
   [CatUtils.FilterByRange]: useToFilterByPriceRangeCats,
   [CatUtils.FilterCategories]: useToFilterCatCategories,
   [CatUtils.FilterByCategory]: useToFilterByCategoryCats,
+};
+
+export const catGetParamsUtils: Partial<{
+  [Pkey in CatUtils]: (...args: never[]) => unknown[];
+}> = {
+  [CatUtils.FilterByRange]: getFilterRangeParams,
+  [CatUtils.FilterByCategory]: getFilterCategoryParams,
 };

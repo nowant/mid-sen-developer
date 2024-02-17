@@ -7,10 +7,13 @@ import { CatUtils } from '../utils';
 })
 export class CatsWorkerService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public work(strategy: CatUtils, params: unknown[]): Observable<any[]> {
+  public work(
+    strategies: CatUtils[],
+    params: unknown[] | object,
+  ): Observable<any[]> {
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     const worker = new Worker(new URL('./cats.worker', import.meta.url));
-    worker.postMessage({ strategy, params });
+    worker.postMessage({ strategies, params });
 
     return new Observable((observer) => {
       worker.onmessage = ({ data }) => {
@@ -19,6 +22,7 @@ export class CatsWorkerService {
       };
 
       worker.onerror = (e) => {
+        console.error(e);
         observer.error(e);
         observer.complete();
       };

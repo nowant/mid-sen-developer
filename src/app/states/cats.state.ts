@@ -88,7 +88,7 @@ export class CatsState {
     ctx.patchState({ isLoading: true });
 
     return this._catsWorkerService
-      .work(CatUtils.Create, [state.filter.total])
+      .work([CatUtils.Create], [state.filter.total])
       .pipe(
         tap((cats: Cat[]) => {
           ctx.patchState({
@@ -138,26 +138,7 @@ export class CatsState {
       },
     });
 
-    const entities = this._getEntitiesByPrimaryFilterAction(
-      ctx,
-      CatUtils.FilterByRange,
-    );
-
-    return this._catsWorkerService
-      .work(CatUtils.FilterByRange, [
-        entities,
-        action.payload.priceMin,
-        action.payload.priceMax,
-      ])
-      .pipe(
-        tap((cats: Cat[]) => {
-          this._updateWithInitialPagination(ctx, cats);
-        }),
-        catchError((e) => {
-          ctx.patchState({ isLoading: false });
-          return of(e);
-        }),
-      );
+    return this._filter(ctx);
   }
 
   @Action(FilterByCategoryCats)
@@ -182,22 +163,7 @@ export class CatsState {
       },
     });
 
-    const entities = this._getEntitiesByPrimaryFilterAction(
-      ctx,
-      CatUtils.FilterByCategory,
-    );
-
-    return this._catsWorkerService
-      .work(CatUtils.FilterByCategory, [entities, action.payload])
-      .pipe(
-        tap((cats: Cat[]) => {
-          this._updateWithInitialPagination(ctx, cats);
-        }),
-        catchError((e) => {
-          ctx.patchState({ isLoading: false });
-          return of(e);
-        }),
-      );
+    return this._filter(ctx);
   }
 
   @Action(ClearFilterCats)
@@ -211,7 +177,23 @@ export class CatsState {
     });
   }
 
-  private _updateWithInitialPagination(
+  private _filter(ctx: StateContext<CatsStateModel>) {
+    const { entities, filter }: CatsStateModel = ctx.getState();
+
+    return this._catsWorkerService
+      .work(filter.actions, { entities, filter })
+      .pipe(
+        tap((cats: Cat[]) => {
+          this._updateFilterWithInitialPagination(ctx, cats);
+        }),
+        catchError((e) => {
+          ctx.patchState({ isLoading: false });
+          return of(e);
+        }),
+      );
+  }
+
+  private _updateFilterWithInitialPagination(
     ctx: StateContext<CatsStateModel>,
     cats: Cat[],
   ) {
@@ -230,14 +212,5 @@ export class CatsState {
     if (actions.indexOf(action) === -1) {
       actions.push(action);
     }
-  }
-
-  private _getEntitiesByPrimaryFilterAction(
-    ctx: StateContext<CatsStateModel>,
-    action: CatUtils,
-  ): Cat[] {
-    const state: CatsStateModel = ctx.getState();
-    const isPrimary: boolean = state.filter.actions.indexOf(action) < 1;
-    return isPrimary ? state.entities : state.entitiesOutput;
   }
 }

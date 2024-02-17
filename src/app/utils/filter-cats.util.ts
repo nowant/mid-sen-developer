@@ -1,4 +1,4 @@
-import { Cat } from '../states/cats.model';
+import { Cat, CatsFilter } from '../states/cats.model';
 
 export function useToFilterByPriceRangeCats(
   cats: Cat[],
@@ -22,4 +22,12 @@ export function useToFilterByCategoryCats(
   category: string,
 ): Cat[] {
   return cats.filter((cat) => cat.category.indexOf(category) > -1);
+}
+
+export function getFilterRangeParams({ priceMin, priceMax }: CatsFilter) {
+  return [priceMin, priceMax];
+}
+
+export function getFilterCategoryParams({ category }: CatsFilter) {
+  return [category];
 }

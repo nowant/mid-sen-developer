@@ -1,7 +1,6 @@
 // eslint-disable-next-line node/no-unpublished-import
 import { SexType, faker } from '@faker-js/faker';
 import { Cat } from '../states/cats.model';
-import { catCategories } from '../constants/cat-categories.const';
 
 export function useToCreateCats(amount: number): Cat[] {
   const data: Cat[] = [];
@@ -12,6 +11,10 @@ export function useToCreateCats(amount: number): Cat[] {
 
   return data;
 }
+
+const catCategories: string[] = new Array(20)
+  .fill(undefined)
+  .map(() => faker.animal.cat());
 
 function createRandomCat(): Cat {
   return {
